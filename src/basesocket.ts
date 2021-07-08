@@ -29,10 +29,6 @@ export const WebsocketDependency: {
   } catch(e) {}
 });
 
-if (WebsocketDependency.module === null) {
-  throw new Error(`Missing a WebSocket Dependency, pick one: ${JSON.stringify(Object.values(DependencyTypes))}`)
-}
-
 export class BaseSocket extends EventSpewer {
   readonly pings = new BaseCollection<string, {
     reject: Function,
@@ -43,6 +39,11 @@ export class BaseSocket extends EventSpewer {
 
   constructor(url: string) {
     super();
+
+    if (WebsocketDependency.module === null) {
+      throw new Error(`Missing a WebSocket Dependency, pick one: ${JSON.stringify(Object.values(DependencyTypes))}`)
+    }
+
     this.socket = new WebsocketDependency.module(url);
     this.socket.on(SocketEventsBase.CLOSE, this.onClose.bind(this));
     this.socket.on(SocketEventsBase.PONG, this.onPong.bind(this));
